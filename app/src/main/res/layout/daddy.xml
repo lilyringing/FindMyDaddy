@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:text="緊急聯絡人"
+        android:id="@+id/contacter"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true" />
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="424dp"
+        android:layout_below="@+id/contacter"
+        android:id="@+id/contacter_list"></ListView>
+
+</RelativeLayout>

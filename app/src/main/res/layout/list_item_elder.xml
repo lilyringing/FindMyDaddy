@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <!-- Name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:textSize="25sp"
+        android:text="沒有監控人"
+        android:id="@+id/elder_name" />
+
+    <!-- Telephone Number -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0900-000-000"
+        android:layout_below="@+id/elder_name"
+        android:layout_toRightOf="@+id/elder_name"
+        android:layout_toEndOf="@+id/elder_name"
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
+        android:id="@+id/elder_phone" />
+
+    <!-- Get Location button -->
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/remove"
+        android:contentDescription="location button"
+        android:id="@+id/location_btn"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/elder_phone"
+        android:layout_toRightOf="@+id/elder_phone"
+        android:layout_toEndOf="@+id/elder_phone" />
+
+    <!-- Add or remove button -->
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/add"
+        android:contentDescription="add remove button"
+        android:layout_alignBottom="@+id/elder_phone"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/ARElder"/>
+</RelativeLayout>
