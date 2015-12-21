@@ -27,13 +27,12 @@
     <ImageView
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/remove"
+        android:src="@drawable/location"
         android:contentDescription="location button"
         android:id="@+id/location_btn"
         android:layout_alignParentTop="true"
-        android:layout_alignBottom="@+id/elder_phone"
-        android:layout_toRightOf="@+id/elder_phone"
-        android:layout_toEndOf="@+id/elder_phone" />
+        android:layout_toLeftOf="@+id/ARElder"
+        android:layout_toStartOf="@+id/ARElder" />
 
     <!-- Add or remove button -->
     <ImageView

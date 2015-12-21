@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class LoginActivity extends AppCompatActivity {
-
+    /* Region Private Fields */
     private String path = Environment.getExternalStorageDirectory().toString();
     private File daddy_file = new File(path + "/daddy.txt");
     private File son_file = new File(path + "/son.txt");
@@ -105,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /* Function used to jump to page: daddy */
     protected void GoToDaddyPage(){
         // TODO Auto-generated method stub
         Intent intent = new Intent();
@@ -112,6 +113,8 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
         LoginActivity.this.finish();
     }
+
+    /* Function used to jump to page: son */
     protected void GoToSonPage(){
         // TODO Auto-generated method stub
         Intent intent = new Intent();
