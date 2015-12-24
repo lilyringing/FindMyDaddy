@@ -3,6 +3,7 @@ package com.example.findmydaddy;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -13,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Context;
 import android.app.Activity;
+import android.widget.Toast;
+
+import org.mcnlab.lib.smscommunicate.CommandHandler;
+import org.mcnlab.lib.smscommunicate.Recorder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,6 +136,14 @@ public class Elder_Adapter extends BaseAdapter {
 
         // Send an SMS to this phone number to get elder's location
         String phone = (String) info.get("PhoneNumber");
+
+        //FindMe : get elder's location (first, send a SMS with cnt = 0)
+        Recorder rec = Recorder.getSharedRecorder();
+        CommandHandler hdlr = CommandHandler.getSharedCommandHandler();
+        SQLiteDatabase db = rec.getWritableDatabase();
+        int device_id = rec.getDeviceIdByPhonenumberOrCreate(db, phone);
+        db.close();
+        hdlr.execute("WHERE", device_id, 0, null);
 
         // Jump to map page
         Intent intent = new Intent();
