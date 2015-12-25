@@ -1,6 +1,7 @@
 package com.example.findmydaddy;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,11 +9,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import org.json.JSONObject;
+import org.mcnlab.lib.smscommunicate.CommandHandler;
+import org.mcnlab.lib.smscommunicate.Recorder;
+import org.mcnlab.lib.smscommunicate.UserDefined;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SonActivity extends AppCompatActivity {
     private FileManager fm;
+    public final static String LOG_TAG = "SonActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,19 @@ public class SonActivity extends AppCompatActivity {
         ListView elder_list = (ListView)findViewById(R.id.elder_list);
         Elder_Adapter EldAdapter = new Elder_Adapter(this, elder_arr);
         elder_list.setAdapter(EldAdapter);
+
+        //FindMe init
+        UserDefined.filter = "$FINDME$";
+
+        Recorder.init(this, "SonActivity");
+        CommandHandler.init(this);
+
+        CommandHandler.getSharedCommandHandler().addExecutor("WHERE", new ExecutorWhere() {
+            @Override
+            public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
+                return super.execute(context, device_id, count, usr_json);
+            }
+        });
     }
 
     @Override

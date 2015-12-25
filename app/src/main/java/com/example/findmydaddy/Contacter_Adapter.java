@@ -114,4 +114,17 @@ public class Contacter_Adapter extends BaseAdapter {
 
         EditDialog.show();
     }
+
+    /*
+    *  falling alarm
+    * when we calculate the falling condition, we send SMS with location to Contactor
+    *
+        Recorder rec = Recorder.getSharedRecorder();
+        CommandHandler hdlr = CommandHandler.getSharedCommandHandler();
+        SQLiteDatabase db = rec.getWritableDatabase();
+        int device_id = rec.getDeviceIdByPhonenumberOrCreate(db, phone);
+        db.close();
+        hdlr.execute("ALARM", device_id, 0, null);
+    *
+    * */
 }

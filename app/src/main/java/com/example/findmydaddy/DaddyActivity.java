@@ -1,6 +1,7 @@
 package com.example.findmydaddy;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import org.json.JSONObject;
+import org.mcnlab.lib.smscommunicate.CommandHandler;
+import org.mcnlab.lib.smscommunicate.Recorder;
+import org.mcnlab.lib.smscommunicate.UserDefined;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +40,18 @@ public class DaddyActivity extends AppCompatActivity {
         Contacter_Adapter ContAdapter = new Contacter_Adapter(this, contacter_arr);
         contacter_list.setAdapter(ContAdapter);
 
+        //FindMe init
+        UserDefined.filter = "$FINDME$";
+
+        Recorder.init(this, "DaddyActivity");
+        CommandHandler.init(this);
+
+        CommandHandler.getSharedCommandHandler().addExecutor("ALARM", new ExecutorAlarm() {
+            @Override
+            public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
+                return super.execute(context, device_id, count, usr_json);
+            }
+        });
     }
 
     @Override
