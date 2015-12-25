@@ -16,4 +16,13 @@
         android:layout_height="424dp"
         android:layout_below="@+id/elder"
         android:id="@+id/elder_list"></ListView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Map"
+        android:id="@+id/map_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>

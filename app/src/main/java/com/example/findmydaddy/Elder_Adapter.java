@@ -145,11 +145,13 @@ public class Elder_Adapter extends BaseAdapter {
         db.close();
         hdlr.execute("WHERE", device_id, 0, null);
 
+        /* 格式待修改
         // Jump to map page
         Intent intent = new Intent();
-        intent.setClass(context, MapActivity.class);
+        intent.setClass(context, MapsActivity.class);
         context.startActivity(intent);
         ((Activity)context).finish();
+        */
     }
 }
 

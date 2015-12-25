@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import org.json.JSONObject;
@@ -18,6 +20,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SonActivity extends AppCompatActivity {
+    private Button googleMap;
+    private double latitude = 25.016738;
+    private double longitude = 121.533638;
+    private  String name = "NTU";
+    private  String phone = "0917961689";
+
     private FileManager fm;
     public final static String LOG_TAG = "SonActivity";
 
@@ -25,6 +33,14 @@ public class SonActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.son);
+        googleMap = (Button)findViewById(R.id.map_button);
+
+        googleMap.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GoToMapPage();
+            }
+        });
 
         fm = new FileManager();
         ArrayList<HashMap<String, Object>> elder_arr = new ArrayList<HashMap<String, Object>>();
@@ -87,5 +103,19 @@ public class SonActivity extends AppCompatActivity {
         intent.setClass(SonActivity.this, LoginActivity.class);
         startActivity(intent);
         SonActivity.this.finish();
+    }
+
+    /* Function used to jump to map page */
+    protected void GoToMapPage(){
+        Intent intent = new Intent();
+        intent.setClass(SonActivity.this, MapsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putDouble("latitude", latitude );
+        bundle.putDouble("longitude", longitude);
+        bundle.putString("name", name);
+        bundle.putString("phone", phone);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        //  SonActivity.this.finish();
     }
 }
