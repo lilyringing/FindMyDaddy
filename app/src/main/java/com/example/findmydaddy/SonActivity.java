@@ -23,8 +23,6 @@ public class SonActivity extends AppCompatActivity {
     private Button googleMap;
     private double latitude = 25.016738;
     private double longitude = 121.533638;
-    private  String name = "NTU";
-    private  String phone = "0917961689";
 
     private FileManager fm;
     public final static String LOG_TAG = "SonActivity";
@@ -49,7 +47,7 @@ public class SonActivity extends AppCompatActivity {
         for(int i=0; i < 3; i++) {
             HashMap<String, Object> item = new HashMap<String, Object>();
             item.put("Name", "Mom " + Integer.toString(i));
-            item.put("PhoneNumber", "0911111111");
+            item.put("PhoneNumber", "5554");
             elder_arr.add(item);
         }
 
@@ -64,6 +62,13 @@ public class SonActivity extends AppCompatActivity {
         CommandHandler.init(this);
 
         CommandHandler.getSharedCommandHandler().addExecutor("WHERE", new ExecutorWhere() {
+            @Override
+            public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
+                return super.execute(context, device_id, count, usr_json);
+            }
+        });
+
+        CommandHandler.getSharedCommandHandler().addExecutor("CALLME", new ExecutorCallMe() {
             @Override
             public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
                 return super.execute(context, device_id, count, usr_json);
@@ -110,10 +115,8 @@ public class SonActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setClass(SonActivity.this, MapsActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putDouble("latitude", latitude );
+        bundle.putDouble("latitude", latitude);
         bundle.putDouble("longitude", longitude);
-        bundle.putString("name", name);
-        bundle.putString("phone", phone);
         intent.putExtras(bundle);
         startActivity(intent);
         //  SonActivity.this.finish();

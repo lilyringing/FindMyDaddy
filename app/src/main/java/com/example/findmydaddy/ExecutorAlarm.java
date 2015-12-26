@@ -83,8 +83,14 @@ public class ExecutorAlarm implements Executor {
 
             default:
                 try{
+                    //lat & lon are the location of elder
                     double lat = usr_json.getDouble("lat");
                     double lon = usr_json.getDouble("lon");
+
+                    //ALARM Dialog
+
+
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

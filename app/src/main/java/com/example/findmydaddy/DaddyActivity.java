@@ -32,7 +32,7 @@ public class DaddyActivity extends AppCompatActivity {
         // 從資料庫取得緊急連絡人資料放入ArrayList
         for(int i=0; i < 3; i++) {
             HashMap<String, Object> item = new HashMap<String, Object>();
-            item.put("PhoneNumber", "0911111111");
+            item.put("PhoneNumber", "5554");
             contacter_arr.add(item);
         }
 

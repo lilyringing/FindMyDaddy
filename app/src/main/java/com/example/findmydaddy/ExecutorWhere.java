@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -33,8 +34,10 @@ public abstract class ExecutorWhere implements Executor {
 
         switch (count) {
             case 0:
+                //Toast.makeText(context, "WHERE case 0", Toast.LENGTH_LONG);
                 return new JSONObject();
             case 1:
+                //Toast.makeText(context, "WHERE case 1", Toast.LENGTH_LONG);
                 final int device_id_closure = device_id;
                 LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -85,12 +88,21 @@ public abstract class ExecutorWhere implements Executor {
                 return null;
 
             case 2:
+                //Toast.makeText(context, "WHERE case 2", Toast.LENGTH_LONG);
                 return usr_json;
 
             default:
                 try{
                     double lat = usr_json.getDouble("lat");
                     double lon = usr_json.getDouble("lon");
+                    Toast.makeText(context, Double.toString(lat) + "," + Double.toString(lon), Toast.LENGTH_LONG);
+                    Intent intent = new Intent();
+                    intent.setClass(context, MapsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putDouble("latitude", lat);
+                    bundle.putDouble("longitude", lon);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

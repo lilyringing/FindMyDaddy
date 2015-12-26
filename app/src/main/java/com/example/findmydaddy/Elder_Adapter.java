@@ -152,6 +152,17 @@ public class Elder_Adapter extends BaseAdapter {
         context.startActivity(intent);
         ((Activity)context).finish();
         */
+    /*
+    *
+    * //FindMe : ask elder to Call Me
+        Recorder rec = Recorder.getSharedRecorder();
+        CommandHandler hdlr = CommandHandler.getSharedCommandHandler();
+        SQLiteDatabase db = rec.getWritableDatabase();
+        int device_id = rec.getDeviceIdByPhonenumberOrCreate(db, phone);
+        db.close();
+        hdlr.execute("CALLME", device_id, 0, null);
+    *
+    * */
     }
 }
 

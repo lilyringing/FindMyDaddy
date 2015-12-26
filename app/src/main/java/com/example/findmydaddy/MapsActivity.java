@@ -22,30 +22,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double latitude;
     private double longitude;
     private  String name;
-    private  String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        call =(ImageButton) findViewById(R.id.phone);
 
         Bundle bundle = getIntent().getExtras();
         latitude = bundle.getDouble("latitude");
         longitude = bundle.getDouble("longitude");
-        name = bundle.getString("name");
-        phone = bundle.getString("phone");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        call.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //send SMS
-                Toast.makeText(v.getContext(), "call", Toast.LENGTH_LONG).show();
-            }
-        });
     }
 
     /**

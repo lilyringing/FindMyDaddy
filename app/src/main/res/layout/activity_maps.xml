@@ -8,11 +8,4 @@
     tools:context="com.example.findmydaddy.MapsActivity"
     android:name="com.google.android.gms.maps.SupportMapFragment" >
 
-    <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:id="@+id/phone"
-        android:layout_gravity="right|top"
-        android:background="@drawable/phone" />
-
 </fragment>
