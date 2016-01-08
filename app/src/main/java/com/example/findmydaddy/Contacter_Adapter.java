@@ -1,8 +1,11 @@
 package com.example.findmydaddy;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +28,7 @@ public class Contacter_Adapter extends BaseAdapter {
     private ArrayList<HashMap<String, Object> > contacter_list;
     private LayoutInflater LInflater;
     private Context context;
+    private int NumOfShowingData;
     private ViewHolder viewHolder;
     private class ViewHolder{
         public TextView phoneNum;
@@ -32,21 +36,25 @@ public class Contacter_Adapter extends BaseAdapter {
     }
 
     /* Constructor */
-    public Contacter_Adapter(Context c, ArrayList<HashMap<String, Object> > list){
+    public Contacter_Adapter(Context c, ArrayList<HashMap<String, Object> > list, int n){
         context = c;
         contacter_list = list;
         LInflater = LayoutInflater.from(context);
+        NumOfShowingData = n;
     }
 
     /* Override BaseAdapter's methods */
     @Override
     public int getCount(){
-        return contacter_list.size();
+        return NumOfShowingData;
     }
 
     @Override
     public Object getItem(int position){
-        return contacter_list.get(position);
+        if(contacter_list.size() > 0)
+            return contacter_list.get(position);
+        else
+            return new Object();
     }
 
     @Override
@@ -68,8 +76,8 @@ public class Contacter_Adapter extends BaseAdapter {
         }
 
         // Fill in the value of that list item
-        HashMap<String, Object> info = contacter_list.get(position);
-        if(info != null){
+        if(position < contacter_list.size()){
+            HashMap<String, Object> info = contacter_list.get(position);
             String number = (String) info.get("PhoneNumber");
             viewHolder.phoneNum.setText(number);
             viewHolder.ARbtn.setImageDrawable(viewHolder.ARbtn.getResources().getDrawable(R.drawable.remove));
@@ -82,37 +90,58 @@ public class Contacter_Adapter extends BaseAdapter {
                     CreateEditDialog(pos);
                 }
             });
+        }else{
+            viewHolder.phoneNum.setText("0900-000-000");
+            viewHolder.ARbtn.setImageDrawable(viewHolder.ARbtn.getResources().getDrawable(R.drawable.add));
+            viewHolder.ARbtn.setTag(position);
+            viewHolder.ARbtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = (int) v.getTag();
+                    CreateEditDialog(pos);
+                }
+            });
+
         }
         return convertView;
     }
 
     /* Function CreateEditDialog which is called when Add/Remove button is clicked */
-    protected void CreateEditDialog(int pos){
-        /*final Dialog EditDialog = new Dialog(context);
-        EditDialog.setContentView(R.layout.edit_contacter_dialog);
-        EditDialog.setTitle("編輯緊急聯絡人");
-        EditText EPhoneNum = (EditText) EditDialog.findViewById(R.id.EContacterPhone);*/
-
-        // Get the information of that list item
-        HashMap<String, Object> info = (HashMap<String, Object>) this.getItem(pos);
-
+    protected void CreateEditDialog(final int pos){
         View EditView = LInflater.inflate(R.layout.edit_contacter_dialog, null);
         AlertDialog.Builder EditDialog = new AlertDialog.Builder(context);
         EditDialog.setView(EditView);
         EditDialog.setTitle("編輯緊急聯絡人");
-        EditText EPhoneNum = (EditText) EditView.findViewById(R.id.EContacterPhone);
-        if(info != null){
-            EPhoneNum.setText((String)info.get("PhoneNumber"));
+        final EditText EPhoneNum = (EditText) EditView.findViewById(R.id.EContacterPhone);
+
+        if(pos < contacter_list.size()){
+            // Get the information of that list item
+            HashMap<String, Object> info = (HashMap<String, Object>) this.getItem(pos);
+            EPhoneNum.setText((String) info.get("PhoneNumber"));
         }
         EditDialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // 將新的電話號碼存入資料庫
-                //Log.e("Test", which to string);
+                FileManager fm = new FileManager();
+                SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(fm.GetDaddyDB(), null, null);
+                if(pos < contacter_list.size()){
+                    db.execSQL("UPDATE contacter SET phone='" + EPhoneNum.getText().toString() + "' WHERE contacterID=" + pos + "");
+                }else{
+                    db.execSQL("INSERT INTO contacter(contacterID, phone) VALUES(" + pos + ", '" + EPhoneNum.getText().toString() + "')");
+                }
+                RefreshPage();
             }
         });
 
         EditDialog.show();
+    }
+
+    public void RefreshPage(){
+        Intent intent = new Intent();
+        intent.setClass(context, DaddyActivity.class);
+        context.startActivity(intent);
+        ((Activity)context).finish();
     }
 
     /*

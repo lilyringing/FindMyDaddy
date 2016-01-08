@@ -46,7 +46,6 @@ public abstract class ExecutorCallMe implements Executor {
                 if(db.isOpen()) {
                     Cursor c = db.rawQuery("SELECT * FROM Commands WHERE role='0' and command='CALLME'", null);
                     c.moveToLast();
-                    c.moveToPrevious();
                     dev_id = c.getInt(5);
                     c = db.rawQuery("SELECT * FROM Devices WHERE id='"+dev_id+"'", null);
                     phone = c.getString(3);

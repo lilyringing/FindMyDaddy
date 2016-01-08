@@ -30,6 +30,7 @@ public class Elder_Adapter extends BaseAdapter {
     private ArrayList<HashMap<String, Object> > elder_list;
     private LayoutInflater LInflater;
     private Context context;
+    private int NumOfShowingData;
     private ViewHolder viewHolder;
     private class ViewHolder{
         public TextView name;
@@ -39,19 +40,23 @@ public class Elder_Adapter extends BaseAdapter {
     }
 
     /* Constructor */
-    public Elder_Adapter(Context c, ArrayList<HashMap<String, Object> > list){
+    public Elder_Adapter(Context c, ArrayList<HashMap<String, Object> > list, int n){
         context = c;
         elder_list = list;
         LInflater = LayoutInflater.from(context);
+        NumOfShowingData = n;
     }
 
     /* Override BaseAdapter's methods */
     @Override
-    public int getCount() { return elder_list.size(); }
+    public int getCount() { return NumOfShowingData; }
 
     @Override
     public Object getItem(int position){
-        return elder_list.get(position);
+        if(elder_list.size() > 0)
+            return elder_list.get(position);
+        else
+            return new Object();
     }
 
     @Override
@@ -75,8 +80,8 @@ public class Elder_Adapter extends BaseAdapter {
         }
 
         // Fill in the value of that list item
-        HashMap<String, Object> info = elder_list.get(position);
-        if(info != null){
+        if(position < elder_list.size()){
+            HashMap<String, Object> info = elder_list.get(position);
             String name = (String) info.get("Name");
             String number = (String) info.get("PhoneNumber");
 
@@ -99,31 +104,50 @@ public class Elder_Adapter extends BaseAdapter {
                     GetElderLocation(pos);
                 }
             });
+        }else{
+            viewHolder.name.setText("沒有監控人");
+            viewHolder.phoneNum.setText("0900-000-000");
+            viewHolder.ARbtn.setImageDrawable(viewHolder.ARbtn.getResources().getDrawable(R.drawable.add));
+            viewHolder.ARbtn.setTag(position);
+            viewHolder.ARbtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = (int) v.getTag();
+                    CreateEditDialog(pos);
+                }
+            });
         }
         return convertView;
     }
 
     /* Function CreateEditDialog which is called when Add/Remove button is clicked */
-    protected void CreateEditDialog(int pos){
-        // Get the information of that list item
-        HashMap<String, Object> info = (HashMap<String, Object>) this.getItem(pos);
-
+    protected void CreateEditDialog(final int pos){
         View EditView = LInflater.inflate(R.layout.edit_elder_dialog, null);
-        AlertDialog.Builder EditDialog = new AlertDialog.Builder(context);
+        final AlertDialog.Builder EditDialog = new AlertDialog.Builder(context);
         EditDialog.setView(EditView);
         EditDialog.setTitle("編輯監控人");
-        EditText EName = (EditText) EditView.findViewById(R.id.EElderName);
-        EditText EPhoneNum = (EditText) EditView.findViewById(R.id.EElderPhone);
+        final EditText EName = (EditText) EditView.findViewById(R.id.EElderName);
+        final EditText EPhoneNum = (EditText) EditView.findViewById(R.id.EElderPhone);
 
-        if(info != null){
+        if(pos < elder_list.size()){
+            // Get the information of that list item
+            HashMap<String, Object> info = (HashMap<String, Object>) this.getItem(pos);
             EName.setText((String) info.get("Name"));
             EPhoneNum.setText((String) info.get("PhoneNumber"));
         }
+
         EditDialog.setPositiveButton("確認", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // 將新的名字和電話號碼存入資料庫
-                //Log.e("Test", which to string);
+                FileManager fm = new FileManager();
+                SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(fm.GetSonDB(), null, null);
+                if(pos < elder_list.size()){
+                    db.execSQL("UPDATE elder SET name='" + EName.getText().toString() + "', phone='" + EPhoneNum.getText().toString() + "' WHERE elderID=" + pos + "");
+                }else{
+                    db.execSQL("INSERT INTO elder(elderID, name, phone) VALUES(" + pos + ", '" + EName.getText().toString() + "', '" + EPhoneNum.getText().toString() + "')");
+                }
+                RefreshPage();
             }
         });
 
@@ -163,6 +187,13 @@ public class Elder_Adapter extends BaseAdapter {
         hdlr.execute("CALLME", device_id, 0, null);
     *
     * */
+    }
+
+    public void RefreshPage(){
+        Intent intent = new Intent();
+        intent.setClass(context, SonActivity.class);
+        context.startActivity(intent);
+        ((Activity)context).finish();
     }
 }
 

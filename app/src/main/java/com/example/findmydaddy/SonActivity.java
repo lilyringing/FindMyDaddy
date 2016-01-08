@@ -3,6 +3,8 @@ package com.example.findmydaddy;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -25,6 +27,7 @@ public class SonActivity extends AppCompatActivity {
     private double longitude = 121.533638;
 
     private FileManager fm;
+    private int TotalNumOfData = 3;
     public final static String LOG_TAG = "SonActivity";
 
     @Override
@@ -44,15 +47,19 @@ public class SonActivity extends AppCompatActivity {
         ArrayList<HashMap<String, Object>> elder_arr = new ArrayList<HashMap<String, Object>>();
 
         // 從資料庫取得監控人資料放入ArrayList
-        for(int i=0; i < 3; i++) {
-            HashMap<String, Object> item = new HashMap<String, Object>();
-            item.put("Name", "Mom " + Integer.toString(i));
-            item.put("PhoneNumber", "5554");
-            elder_arr.add(item);
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(fm.GetSonDB(), null, null);
+        Cursor c = db.rawQuery("SELECT * FROM elder ORDER BY elderID", null);
+        if(c.getCount() != 0){
+            while(c.moveToNext()){
+                HashMap<String, Object> item = new HashMap<String, Object>();
+                item.put("Name", c.getString(1));
+                item.put("PhoneNumber", c.getString(2));
+                elder_arr.add(item);
+            }
         }
 
         ListView elder_list = (ListView)findViewById(R.id.elder_list);
-        Elder_Adapter EldAdapter = new Elder_Adapter(this, elder_arr);
+        Elder_Adapter EldAdapter = new Elder_Adapter(this, elder_arr, TotalNumOfData);
         elder_list.setAdapter(EldAdapter);
 
         //FindMe init

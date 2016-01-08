@@ -3,6 +3,8 @@ package com.example.findmydaddy;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import java.util.HashMap;
 
 public class DaddyActivity extends AppCompatActivity {
     private FileManager fm;
+    private int TotalNumOfData = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +33,19 @@ public class DaddyActivity extends AppCompatActivity {
         ArrayList<HashMap<String, Object>> contacter_arr = new ArrayList<HashMap<String, Object>>();
 
         // 從資料庫取得緊急連絡人資料放入ArrayList
-        for(int i=0; i < 3; i++) {
-            HashMap<String, Object> item = new HashMap<String, Object>();
-            item.put("PhoneNumber", "5554");
-            contacter_arr.add(item);
+        SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(fm.GetDaddyDB(), null, null);
+        Cursor c = db.rawQuery("SELECT * FROM contacter ORDER BY contacterID", null);
+        if(c.getCount() != 0){
+            while(c.moveToNext()){
+                HashMap<String, Object> item = new HashMap<String, Object>();
+                item.put("PhoneNumber", c.getString(1));
+                contacter_arr.add(item);
+            }
         }
 
+
         ListView contacter_list = (ListView)findViewById(R.id.contacter_list);
-        Contacter_Adapter ContAdapter = new Contacter_Adapter(this, contacter_arr);
+        Contacter_Adapter ContAdapter = new Contacter_Adapter(this, contacter_arr, TotalNumOfData);
         contacter_list.setAdapter(ContAdapter);
 
         //FindMe init
