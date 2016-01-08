@@ -19,10 +19,50 @@ import org.mcnlab.lib.smscommunicate.UserDefined;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
+import org.json.JSONObject;
+import org.mcnlab.lib.smscommunicate.CommandHandler;
+import org.mcnlab.lib.smscommunicate.Recorder;
+import org.mcnlab.lib.smscommunicate.UserDefined;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.widget.TextView;
+import android.hardware.SensorEventListener;
+import android.os.Handler;
+import android.content.Context;
+import android.support.v7.app.AlertDialog;
+import android.content.DialogInterface;
+import android.hardware.SensorEvent;
 public class DaddyActivity extends AppCompatActivity {
     private FileManager fm;
     private int TotalNumOfData = 3;
+    private SensorManager sm;
+    private Sensor aSensor;
+    private Sensor mSensor;
+    private Integer acc_recording = 0;//0 idle 1 waiting 2 recording
+    TextView Acc_Info;
+    float[] accelerometerValues = new float[3];
+    float[] prev_accelerometerValues = new float[3];
+    float[] magneticFieldValues = new float[3];
+    private static final String TAG = "sensor";
+    Handler handler=new Handler();
+    float[] accRecord =  new float[3];
+    Integer recordCount = 0;
+    float accChange;
+    Context context = this;
+    double max_acc = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +100,11 @@ public class DaddyActivity extends AppCompatActivity {
                 return super.execute(context, device_id, count, usr_json);
             }
         });
+
+        //Acc_Info = (TextView) findViewById(R.id.acc_info);
+        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+        aSensor = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sm.registerListener(myListener, aSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -95,4 +140,69 @@ public class DaddyActivity extends AppCompatActivity {
         startActivity(intent);
         DaddyActivity.this.finish();
     }
+    final SensorEventListener myListener = new SensorEventListener() {
+        public void onSensorChanged(SensorEvent sensorEvent) {
+
+            // if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            //    magneticFieldValues = sensorEvent.values;
+            if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+                accelerometerValues = sensorEvent.values;
+            calculateOrientation();
+        }
+
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+
+    private void calculateOrientation() {
+        float[] values = new float[3];
+        float[] R = new float[9];
+        //recordCount = recordCount+1;
+        SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues);
+        SensorManager.getOrientation(R, values);
+        double cur_acc = Math.sqrt(Math.abs(accelerometerValues[0])*Math.abs(accelerometerValues[0])+Math.abs(accelerometerValues[1])*Math.abs(accelerometerValues[1])+Math.abs(accelerometerValues[2])*Math.abs(accelerometerValues[2]));
+        if( max_acc > cur_acc)
+            max_acc = cur_acc;
+        //Acc_Info.setText(accChange + "  " + cur_acc + " " + max_acc);
+        if ((cur_acc<=4) && (acc_recording == 0)) {
+            acc_recording = 1;
+            handler.postDelayed(startRecording, 2500);
+        }
+        if(acc_recording == 2) {
+            accChange = accChange + Math.abs(prev_accelerometerValues[0]-accelerometerValues[0]) +  Math.abs(prev_accelerometerValues[1]-accelerometerValues[1]) +  Math.abs(prev_accelerometerValues[2]-accelerometerValues[2]);
+            prev_accelerometerValues[0] = accelerometerValues[0];
+            prev_accelerometerValues[1] = accelerometerValues[1];
+            prev_accelerometerValues[2] = accelerometerValues[2];
+        }
+    }
+    Runnable fallJudgement=new Runnable(){
+        @Override
+        public void run() {
+            if (accChange <= 2.5) {//活動量太少，判斷為跌倒
+                //切換到跌倒警示頁面 FallAlertActivity
+                Intent intent = new Intent(DaddyActivity.this,FallAlertActivity.class);
+                startActivity(intent);
+            }
+
+            //發出震動警訊
+            // TODO Auto-generated method stub
+            acc_recording = 0;
+            accChange = 0;
+
+            //
+
+        }
+    };
+    Runnable startRecording=new Runnable(){
+        @Override
+        public void run() {
+            acc_recording = 2;
+            recordCount = 0;
+            accChange = 0;
+            prev_accelerometerValues[0] = accelerometerValues[0];
+            prev_accelerometerValues[1] = accelerometerValues[1];
+            prev_accelerometerValues[2] = accelerometerValues[2];
+            handler.postDelayed(fallJudgement, 2000);
+        }
+    };
 }
