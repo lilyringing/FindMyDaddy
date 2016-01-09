@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
 import org.mcnlab.lib.smscommunicate.CommandHandler;
 import org.mcnlab.lib.smscommunicate.Recorder;
 
@@ -39,6 +40,8 @@ public class SonAlertActivity extends Activity {
     Boolean confirm = false;
     Vibrator myVibrator;
     KeyguardManager.KeyguardLock keyguard;
+    double lat;
+    double lon;
 
 
     @Override    protected void onCreate(Bundle savedInstanceState) {
@@ -79,8 +82,8 @@ public class SonAlertActivity extends Activity {
         }
         //取得位置資訊
         Bundle bundle = getIntent().getExtras();
-        double lat = bundle.getDouble("lat");
-        double lon = bundle.getDouble("lon");
+        lat = bundle.getDouble("lat");
+        lon = bundle.getDouble("lon");
 
         text_content.setText("手機號碼：" +phone + "\n\n向您發出了跌倒警訊，您可以採取以下行動來幫助他！");
 
@@ -90,6 +93,7 @@ public class SonAlertActivity extends Activity {
             public void onClick(View v) {
                 confirm = true;
                 keyguard.reenableKeyguard();
+                GoToMapPage();
             }
         });
         //按下強制通話按鈕
@@ -97,6 +101,12 @@ public class SonAlertActivity extends Activity {
             @Override            public void onClick(View v) {
                 confirm = true;
                 keyguard.reenableKeyguard();
+                CommandHandler.getSharedCommandHandler().addExecutor("CALLME", new ExecutorCallMe() {
+                    @Override
+                    public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
+                        return super.execute(context, device_id, count, usr_json);
+                    }
+                });
             }
         });
         //按下關閉視窗X
@@ -120,6 +130,18 @@ public class SonAlertActivity extends Activity {
             }
         }
     };
+
+    /* Function used to jump to map page */
+    protected void GoToMapPage(){
+        Intent intent = new Intent();
+        intent.setClass(this, MapsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putDouble("latitude", lat);
+        bundle.putDouble("longitude", lon);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        //  SonActivity.this.finish();
+    }
 
 
 }
