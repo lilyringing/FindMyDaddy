@@ -2,7 +2,9 @@ package com.example.findmydaddy;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,6 +24,8 @@ import java.text.DecimalFormat;
  * Created by sally on 2015/12/24.
  */
 public class ExecutorAlarm implements Executor {
+
+
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public JSONObject execute(Context context, final int device_id, int count, JSONObject usr_json) {
@@ -88,7 +92,8 @@ public class ExecutorAlarm implements Executor {
                     double lon = usr_json.getDouble("lon");
 
                     //ALARM Dialog
-
+                    Intent intent = new Intent(context,SonAlertActivity.class);
+                    context.startActivity(intent);
 
 
                 } catch (JSONException e) {

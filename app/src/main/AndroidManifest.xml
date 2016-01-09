@@ -55,9 +55,20 @@
             android:name=".DaddyActivity"
             android:launchMode="singleInstance">
         </activity>
-        <activity android:name=".SonActivity" />
+        <activity
+            android:name=".SonActivity"
+            android:launchMode="singleInstance">
+        </activity>
         <activity
             android:name=".FallAlertActivity"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true"
+            android:theme="@android:style/Theme.Dialog">
+        </activity>
+        <activity
+            android:name=".SonAlertActivity"
             android:noHistory="true"
             android:taskAffinity=""
             android:excludeFromRecents="true"
