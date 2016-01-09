@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.KeyguardManager;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -76,6 +77,10 @@ public class SonAlertActivity extends Activity {
             c.close();
             db.close();
         }
+        //取得位置資訊
+        Bundle bundle = getIntent().getExtras();
+        double lat = bundle.getDouble("lat");
+        double lon = bundle.getDouble("lon");
 
         text_content.setText("手機號碼：" +phone + "\n\n向您發出了跌倒警訊，您可以採取以下行動來幫助他！");
 

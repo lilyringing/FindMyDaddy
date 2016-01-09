@@ -93,6 +93,10 @@ public class ExecutorAlarm implements Executor {
 
                     //ALARM Dialog
                     Intent intent = new Intent(context,SonAlertActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putDouble("lat", lat);//傳遞Double
+                    bundle.putDouble("lon",lon);//傳遞String
+                    intent.putExtras(bundle);
                     context.startActivity(intent);
 
 
