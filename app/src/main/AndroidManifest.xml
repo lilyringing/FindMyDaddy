@@ -59,6 +59,7 @@
             android:name=".SonActivity"></activity>
         <activity
             android:name=".FallAlertActivity"
+            android:launchMode="singleInstance"
             android:noHistory="true"
             android:taskAffinity=""
             android:excludeFromRecents="true"
@@ -67,6 +68,7 @@
         </activity>
         <activity
             android:name=".SonAlertActivity"
+            android:launchMode="singleInstance"
             android:noHistory="true"
             android:taskAffinity=""
             android:excludeFromRecents="true"

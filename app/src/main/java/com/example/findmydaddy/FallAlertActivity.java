@@ -66,11 +66,11 @@ public class FallAlertActivity extends Activity {
             @Override
             public void onClick(View v) {
                 confirm = true;
-//                Toast.makeText(FallAlertActivity.this, "you click confirm!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(FallAlertActivity.this, "簡訊已送出!", Toast.LENGTH_SHORT).show();
 
                 handler.postDelayed(sendSMS, 0);
                 keyguard.reenableKeyguard();
-                //finish();
+                finish();
             }
         });
         btn_cancel.setOnClickListener(new View.OnClickListener() {
