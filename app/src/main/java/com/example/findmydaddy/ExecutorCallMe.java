@@ -43,6 +43,7 @@ public abstract class ExecutorCallMe implements Executor {
 
         switch (count) {
             case 0:
+                Toast.makeText(context, "WHERE case 0", Toast.LENGTH_SHORT).show();
                 return new JSONObject();
 
             default:

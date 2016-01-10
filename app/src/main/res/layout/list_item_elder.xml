@@ -19,9 +19,18 @@
         android:layout_below="@+id/elder_name"
         android:layout_toRightOf="@+id/elder_name"
         android:layout_toEndOf="@+id/elder_name"
-        android:layout_marginLeft="27dp"
-        android:layout_marginStart="27dp"
         android:id="@+id/elder_phone" />
+
+    <!-- Get Location button -->
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/phone"
+        android:contentDescription="phone button"
+        android:id="@+id/phone_btn"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/location_btn"
+        android:layout_toStartOf="@+id/location_btn" />
 
     <!-- Get Location button -->
     <ImageView

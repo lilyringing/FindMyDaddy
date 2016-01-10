@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -68,6 +69,9 @@ public class DaddyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.daddy);
+
+        View backgroundimage = (View) findViewById(R.id.daddy_background);
+        backgroundimage.getBackground().setAlpha(110);
 
         fm = new FileManager();
         ArrayList<HashMap<String, Object>> contacter_arr = new ArrayList<HashMap<String, Object>>();

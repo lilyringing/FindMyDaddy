@@ -19,6 +19,7 @@ import android.widget.Toast;
 import org.json.JSONObject;
 import org.mcnlab.lib.smscommunicate.CommandHandler;
 import org.mcnlab.lib.smscommunicate.Recorder;
+import org.mcnlab.lib.smscommunicate.UserDefined;
 
 /**
  * Created by Diamond on 2016/1/9.
@@ -42,7 +43,9 @@ public class SonAlertActivity extends Activity {
     KeyguardManager.KeyguardLock keyguard;
     double lat;
     double lon;
+    public final static String LOG_TAG = "SonAlertActivity";
 
+    String phone = "";
 
     @Override    protected void onCreate(Bundle savedInstanceState) {
 
@@ -65,12 +68,23 @@ public class SonAlertActivity extends Activity {
         text_title  = (TextView)findViewById(R.id.text_title);
         text_content = (TextView)findViewById(R.id.text_content);
 
+        //FindMe init
+        UserDefined.filter = "$FINDME$";
+
+        Recorder.init(this, "SonAlertActivity");
+        CommandHandler.init(this);
+
+        CommandHandler.getSharedCommandHandler().addExecutor("CALLME", new ExecutorCallMe() {
+            @Override
+            public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
+                return super.execute(context, device_id, count, usr_json);
+            }
+        });
 
         //找出傳來求救訊號的人的divice id & phone number
         Recorder rec = Recorder.getSharedRecorder();
         SQLiteDatabase db = rec.getReadableDatabase();
         int dev_id = 0;
-        String phone = "";
         if(db.isOpen()) {
             Cursor c = db.rawQuery("SELECT * FROM Commands WHERE role='0' and command='CALLME'", null);
             c.moveToLast();
@@ -85,7 +99,7 @@ public class SonAlertActivity extends Activity {
         lat = bundle.getDouble("lat");
         lon = bundle.getDouble("lon");
 
-        text_content.setText("手機號碼：" +phone + "\n\n向您發出了跌倒警訊，您可以採取以下行動來幫助他！");
+        text_content.setText("手機號碼：" + phone + "\n\n向您發出了跌倒警訊，您可以採取以下行動來幫助他！");
 
         //按下查看地點按鈕
         btn_map.setOnClickListener(new View.OnClickListener() {
@@ -101,12 +115,13 @@ public class SonAlertActivity extends Activity {
             @Override            public void onClick(View v) {
                 confirm = true;
                 keyguard.reenableKeyguard();
-                CommandHandler.getSharedCommandHandler().addExecutor("CALLME", new ExecutorCallMe() {
-                    @Override
-                    public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
-                        return super.execute(context, device_id, count, usr_json);
-                    }
-                });
+                //FindMe : ask elder to Call Me
+                Recorder rec = Recorder.getSharedRecorder();
+                CommandHandler hdlr = CommandHandler.getSharedCommandHandler();
+                SQLiteDatabase db = rec.getWritableDatabase();
+                int device_id = rec.getDeviceIdByPhonenumberOrCreate(db, phone);
+                db.close();
+                hdlr.execute("CALLME", device_id, 0, null);
             }
         });
         //按下關閉視窗X

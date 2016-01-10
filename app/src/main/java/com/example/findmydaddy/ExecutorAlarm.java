@@ -11,7 +11,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,16 +38,8 @@ public class ExecutorAlarm implements Executor {
                 final int device_id_closure = device_id;
                 LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-                if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    public void requestPermissions(@NonNull String[] permissions, int requestCode)
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for Activity#requestPermissions for more details.
-                    return null;
-                }
+                Toast.makeText(context, "WHERE case 0", Toast.LENGTH_SHORT).show();
+
                 LocationListener myloclis = new LocationListener() {
                     @Override
                     public void onLocationChanged(Location location) {
@@ -79,10 +73,16 @@ public class ExecutorAlarm implements Executor {
 
                     }
                 };
-                locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, myloclis, null);
+                try {
+                    locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, myloclis, null);
+                }
+                catch (SecurityException se){
+                    Toast.makeText(context, "No Permission !", Toast.LENGTH_SHORT).show();
+                }
                 return null;
 
             case 1:
+                Toast.makeText(context, "WHERE case 1", Toast.LENGTH_SHORT).show();
                 return usr_json;
 
             default:

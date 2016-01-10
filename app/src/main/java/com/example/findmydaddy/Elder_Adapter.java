@@ -37,6 +37,7 @@ public class Elder_Adapter extends BaseAdapter {
         public TextView phoneNum;
         public ImageView ARbtn;
         public ImageView Locationbtn;
+        public ImageView Phonebtn;
     }
 
     /* Constructor */
@@ -76,6 +77,7 @@ public class Elder_Adapter extends BaseAdapter {
             viewHolder.phoneNum = (TextView) convertView.findViewById(R.id.elder_phone);
             viewHolder.ARbtn = (ImageView) convertView.findViewById(R.id.ARElder);
             viewHolder.Locationbtn = (ImageView) convertView.findViewById(R.id.location_btn);
+            viewHolder.Phonebtn = (ImageView) convertView.findViewById(R.id.phone_btn);
             convertView.setTag(viewHolder);
         }
 
@@ -102,6 +104,14 @@ public class Elder_Adapter extends BaseAdapter {
                 public void onClick(View v) {
                     int pos = (int) v.getTag();
                     GetElderLocation(pos);
+                }
+            });
+            viewHolder.Phonebtn.setTag(position);
+            viewHolder.Phonebtn.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = (int) v.getTag();
+                    AskElderToCall(pos);
                 }
             });
         }else{
@@ -176,19 +186,23 @@ public class Elder_Adapter extends BaseAdapter {
         context.startActivity(intent);
         ((Activity)context).finish();
         */
-    /*
-    *
-    * //FindMe : ask elder to Call Me
+
+    }
+    protected void AskElderToCall(int pos) {
+        // Get the information of that list item
+        HashMap<String, Object> info = (HashMap<String, Object>) this.getItem(pos);
+
+        // Send an SMS to this phone number to ask elder to call contactor
+        String phone = (String) info.get("PhoneNumber");
+
+        //FindMe : ask elder to call (first, send a SMS with cnt = 0)
         Recorder rec = Recorder.getSharedRecorder();
         CommandHandler hdlr = CommandHandler.getSharedCommandHandler();
         SQLiteDatabase db = rec.getWritableDatabase();
         int device_id = rec.getDeviceIdByPhonenumberOrCreate(db, phone);
         db.close();
         hdlr.execute("CALLME", device_id, 0, null);
-    *
-    * */
     }
-
     public void RefreshPage(){
         Intent intent = new Intent();
         intent.setClass(context, SonActivity.class);

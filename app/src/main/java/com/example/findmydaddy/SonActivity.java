@@ -34,6 +34,10 @@ public class SonActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.son);
+
+        View backgroundimage = (View) findViewById(R.id.son_background);
+        backgroundimage.getBackground().setAlpha(110);
+
         googleMap = (Button)findViewById(R.id.map_button);
 
         googleMap.setOnClickListener(new Button.OnClickListener() {
