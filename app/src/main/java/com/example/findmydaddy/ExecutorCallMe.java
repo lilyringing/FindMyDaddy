@@ -47,32 +47,39 @@ public abstract class ExecutorCallMe implements Executor {
                 return new JSONObject();
 
             default:
+
+                //Toast.makeText(context, "test", Toast.LENGTH_LONG).show();
                 //get phone number of the contacter
                 Recorder rec = Recorder.getSharedRecorder();
                 SQLiteDatabase db = rec.getReadableDatabase();
                 int dev_id = 0;
                 String phone = "";
+
                 if(db.isOpen()) {
-                    Cursor c = db.rawQuery("SELECT * FROM Commands WHERE role='0' and command='CALLME'", null);
-                    c.moveToLast();
-                    dev_id = c.getInt(5);
-                    c = db.rawQuery("SELECT * FROM Devices WHERE id='"+dev_id+"'", null);
-                    phone = c.getString(3);
-                    Toast.makeText(context, phone, Toast.LENGTH_LONG).show();
-                    c.close();
-                    db.close();
-                }
-                //Call
-                if(phone != "") {
-                    /*自動擴音
+                    Cursor c = db.rawQuery("SELECT device_id FROM Commands WHERE role = 0 and command = \"CALLME\"", null);
+                    if(c.getCount() != 0) {
+                        c.moveToLast();
+                        dev_id = c.getInt(0);
+                        //role = c.getInt(0);
+                        //Toast.makeText(context, String.format("%d", dev_id), Toast.LENGTH_SHORT).show();
+                        c = db.rawQuery("SELECT phonenumber FROM Devices WHERE id='" + dev_id + "'", null);
+                        c.moveToFirst();
+                        phone = c.getString(0);
+                        Toast.makeText(context, phone, Toast.LENGTH_SHORT).show();
+                        c.close();
+                        db.close();
+                        /*自動擴音
                                                     manager.listen(myPhoneStateListener,
                                                     PhoneStateListener.LISTEN_CALL_STATE);
                                                     callFromApp=true;
-                                      */
-                    Intent dial = new Intent();
-                    dial.setAction("android.intent.action.CALL");
-                    dial.setData(Uri.parse("tel:" + phone));
-                    context.startActivity(dial);
+                                                */
+                        Intent dial = new Intent();
+                        dial.setAction("android.intent.action.CALL");
+                        dial.setData(Uri.parse("tel:" + phone));
+                        context.startActivity(dial);
+                    }
+                    else
+                        Toast.makeText(context, "NO phone number", Toast.LENGTH_SHORT).show();
                 }
                 return null;
         }

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SonActivity extends AppCompatActivity {
-    private Button googleMap;
+    //private Button googleMap;
     private double latitude = 25.016738;
     private double longitude = 121.533638;
 
@@ -38,14 +38,14 @@ public class SonActivity extends AppCompatActivity {
         View backgroundimage = (View) findViewById(R.id.son_background);
         backgroundimage.getBackground().setAlpha(110);
 
-        googleMap = (Button)findViewById(R.id.map_button);
+        /*googleMap = (Button)findViewById(R.id.map_button);
 
         googleMap.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GoToMapPage();
             }
-        });
+        });*/
 
         fm = new FileManager();
         ArrayList<HashMap<String, Object>> elder_arr = new ArrayList<HashMap<String, Object>>();
@@ -73,6 +73,13 @@ public class SonActivity extends AppCompatActivity {
         CommandHandler.init(this);
 
         CommandHandler.getSharedCommandHandler().addExecutor("WHERE", new ExecutorWhere() {
+            @Override
+            public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
+                return super.execute(context, device_id, count, usr_json);
+            }
+        });
+
+        CommandHandler.getSharedCommandHandler().addExecutor("ALARM", new ExecutorAlarm() {
             @Override
             public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
                 return super.execute(context, device_id, count, usr_json);

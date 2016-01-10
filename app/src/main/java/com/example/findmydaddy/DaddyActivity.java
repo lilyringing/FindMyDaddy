@@ -98,7 +98,21 @@ public class DaddyActivity extends AppCompatActivity {
         Recorder.init(this, "DaddyActivity");
         CommandHandler.init(this);
 
+        CommandHandler.getSharedCommandHandler().addExecutor("WHERE", new ExecutorWhere() {
+            @Override
+            public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
+                return super.execute(context, device_id, count, usr_json);
+            }
+        });
+
         CommandHandler.getSharedCommandHandler().addExecutor("ALARM", new ExecutorAlarm() {
+            @Override
+            public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
+                return super.execute(context, device_id, count, usr_json);
+            }
+        });
+
+        CommandHandler.getSharedCommandHandler().addExecutor("CALLME", new ExecutorCallMe() {
             @Override
             public JSONObject execute(Context context, int device_id, int count, JSONObject usr_json) {
                 return super.execute(context, device_id, count, usr_json);

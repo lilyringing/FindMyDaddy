@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -87,13 +88,18 @@ public class SonAlertActivity extends Activity {
         SQLiteDatabase db = rec.getReadableDatabase();
         int dev_id = 0;
         if(db.isOpen()) {
-            Cursor c = db.rawQuery("SELECT * FROM Commands WHERE role='0' and command='CALLME'", null);
-            c.moveToLast();
-            dev_id = c.getInt(5);
-            c = db.rawQuery("SELECT * FROM Devices WHERE id='" + dev_id + "'", null);
-            phone = c.getString(3);
-            c.close();
-            db.close();
+            Cursor c = db.rawQuery("SELECT device_id FROM Commands WHERE role = 0 and command = \"CALLME\"", null);
+            if(c.getCount() != 0) {
+                c.moveToLast();
+                dev_id = c.getInt(0);
+                c = db.rawQuery("SELECT phonenumber FROM Devices WHERE id='" + dev_id + "'", null);
+                c.moveToFirst();
+                phone = c.getString(0);
+                c.close();
+                db.close();
+            }
+            else
+                Toast.makeText(this, "NO phone number", Toast.LENGTH_SHORT).show();
         }
         //取得位置資訊
         Bundle bundle = getIntent().getExtras();
