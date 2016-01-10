@@ -42,7 +42,7 @@ public class FallAlertActivity extends Activity {
     @Override    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
         keyguard = km.newKeyguardLock("fall_alert_dialog");
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
@@ -76,7 +76,7 @@ public class FallAlertActivity extends Activity {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override            public void onClick(View v) {
                 confirm = true;
-//                Toast.makeText(FallAlertActivity.this,"you click cancel!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(FallAlertActivity.this,"you click cancel!", Toast.LENGTH_SHORT).show();
                 keyguard.reenableKeyguard();
                 finish();
             }
@@ -84,7 +84,7 @@ public class FallAlertActivity extends Activity {
         text_close.setOnClickListener(new View.OnClickListener() {
             @Override            public void onClick(View v) {
                 confirm = true;
-//                Toast.makeText(FallAlertActivity.this,"you click close!",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(FallAlertActivity.this,"you click close!",Toast.LENGTH_SHORT).show();
                 keyguard.reenableKeyguard();
                 finish();
             }

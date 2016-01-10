@@ -54,13 +54,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DaddyActivity"
-            android:launchMode="singleInstance">
-        </activity>
+            android:name=".DaddyActivity"></activity>
         <activity
-            android:name=".SonActivity"
-            android:launchMode="singleInstance">
-        </activity>
+            android:name=".SonActivity"></activity>
         <activity
             android:name=".FallAlertActivity"
             android:noHistory="true"
